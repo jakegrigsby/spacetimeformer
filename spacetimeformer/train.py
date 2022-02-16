@@ -22,6 +22,7 @@ _DSETS = [
     "toy1",
     "toy2",
     "solar_energy",
+    "carla",
 ]
 
 
@@ -110,6 +111,9 @@ def create_model(config):
     elif config.dset == "toy2":
         x_dim = 6
         y_dim = 20
+    elif config.dset == "carla":
+        x_dim = 6
+        y_dim = 50
 
     assert x_dim is not None
     assert y_dim is not None
@@ -264,6 +268,10 @@ def create_dset(config):
             if data_path == "auto":
                 data_path = "./data/solar_AL_converted.csv"
             target_cols = [str(i) for i in range(137)]
+        elif config.dset == "carla":
+            if data_path == "auto":
+                data_path = "/p/qdatatext/jcg6dn/Carla_dset.csv"
+            target_cols = [str(i) for i in range(50)]
         elif "toy" in config.dset:
             if data_path == "auto":
                 if config.dset == "toy1":
@@ -422,6 +430,7 @@ def main(args):
         #track_grad_norm=2,
         accumulate_grad_batches=args.accumulate,
         sync_batchnorm=True,
+        max_epochs=1,
         val_check_interval=0.25 if args.dset == "asos" else 1.0,
     )
 
