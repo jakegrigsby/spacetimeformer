@@ -55,6 +55,7 @@ class Spacetimeformer(nn.Module):
         intermediate_downsample_convs: int = 0,
         device=torch.device("cuda:0"),
         null_value: float = None,
+        out_dim : int = None,
         verbose: bool = True,
     ):
         super().__init__()
@@ -160,7 +161,10 @@ class Spacetimeformer(nn.Module):
         qprint(f"Val Embedding: {self.embedding.VAL}")
         qprint(f"Given Embedding: {self.embedding.GIVEN}")
 
-        out_dim = 2 if self.embed_method == "spatio-temporal" else 2 * d_y
+        if not out_dim:
+            out_dim = 1 if self.embed_method == "spatio-temporal" else d_y
+        # account for mean, std output
+        out_dim *= 2
         self.forecaster = nn.Linear(d_model, out_dim, bias=True)
         self.classifier = nn.Linear(d_model, d_y, bias=True)
 
