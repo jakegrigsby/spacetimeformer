@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import pytorch_lightning as pl
 from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
 import spacetimeformer as stf
 
@@ -109,6 +110,17 @@ class CSVTimeSeries:
         self._train_data = self.apply_scaling_df(df[train_mask])
         self._val_data = self.apply_scaling_df(df[val_mask])
         self._test_data = self.apply_scaling_df(df[test_mask])
+
+    def plot(self, split: str):
+        assert split in ["train", "val", "test"]
+        if split == "train":
+            df = self._train_data
+        elif split == "val":
+            df = self._val_data
+        else:
+            df = self._test_data
+        df.plot(x=self.time_col_name, y=self.target_cols)
+        plt.show()
 
     def get_slice(self, split, start, stop, skip):
         assert split in ["train", "val", "test"]
